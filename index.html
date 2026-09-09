@@ -159,7 +159,6 @@
       <div class="field">
         <label>Who's this for</label>
         <div class="chips" id="assign-chips" role="group" aria-label="Assign to"></div>
-        <div class="hint">Pick "Everyone" for a shared cost, or select one or more people to split just between them (e.g. Couple 1 + Couple 2 splits it 50/50 between those two).</div>
       </div>
       <button type="submit" class="btn" id="add-btn">Add to ledger</button>
     </form>
@@ -221,7 +220,7 @@ let paid = JSON.parse(JSON.stringify(DEFAULT_PAID));
 let items = FIXED_ITEMS.slice();
 
 let selectedCat = "supplemental";
-let selectedAssign = "all"; // "all", or an array of payer ids like ["p1","p2"]
+let selectedAssign = "all";
 
 const $ = sel => document.querySelector(sel);
 const lockedList = $("#locked-list");
@@ -239,9 +238,12 @@ function payerTotals(){
   items.forEach(it => {
     if (it.assign === "all") {
       ids.forEach(id => totals[id] += it.amount * ((WEIGHTS[id] || 1) / totalWeight));
-    } else if (Array.isArray(it.assign) && it.assign.length) {
-      const chosen = it.assign.filter(id => totals.hasOwnProperty(id));
-      if (chosen.length) chosen.forEach(id => totals[id] += it.amount / chosen.length);
+    } else if (it.assign === "wife") {
+      // The wife's share is split 50/50 between Couple 1 and Couple 2.
+      if (totals.hasOwnProperty("p1")) totals.p1 += it.amount / 2;
+      if (totals.hasOwnProperty("p2")) totals.p2 += it.amount / 2;
+    } else if (totals.hasOwnProperty(it.assign)) {
+      totals[it.assign] += it.amount;
     }
   });
   return totals;
@@ -258,11 +260,17 @@ function renderAssignChips(){
   ids.forEach(id => {
     const b = document.createElement("button");
     b.type = "button"; b.className = "chip"; b.dataset.assign = id;
-    const isPicked = Array.isArray(selectedAssign) && selectedAssign.includes(id);
-    b.setAttribute("aria-pressed", isPicked ? "true" : "false");
+    b.setAttribute("aria-pressed", selectedAssign === id ? "true" : "false");
     b.textContent = payers[id].name || id;
     assignChips.appendChild(b);
   });
+  const wife = document.createElement("button");
+  wife.type = "button"; wife.className = "chip"; wife.dataset.assign = "wife";
+  wife.setAttribute("aria-pressed", selectedAssign === "wife" ? "true" : "false");
+  const c1 = payers.p1 ? payers.p1.name : "Couple 1";
+  const c2 = payers.p2 ? payers.p2.name : "Couple 2";
+  wife.textContent = `Wife's (split ${c1} & ${c2})`;
+  assignChips.appendChild(wife);
 }
 
 function renderLocked(){
@@ -273,17 +281,6 @@ function renderLocked(){
     row.innerHTML = `<span class="desc">${catLabel[it.category] || it.description}</span><span class="amt num">${money(it.amount)}</span>`;
     lockedList.appendChild(row);
   });
-}
-
-function whoLabel(assign){
-  if (assign === "all") return "Split by seat (all 3)";
-  if (Array.isArray(assign)){
-    const names = assign.map(id => payers[id] ? payers[id].name : id);
-    if (names.length === 1) return names[0];
-    return names.join(" & ") + " (split evenly)";
-  }
-  // Backward compatibility with items saved before multi-select existed.
-  return payers[assign] ? payers[assign].name : "Unassigned";
 }
 
 function renderAdded(){
@@ -299,7 +296,9 @@ function renderAdded(){
   added.forEach(it => {
     const row = document.createElement("div");
     row.className = "added";
-    const who = whoLabel(it.assign);
+    const who = it.assign === "all" ? "Split by seat (all 3)"
+      : it.assign === "wife" ? `Wife's — split ${payers.p1 ? payers.p1.name : "Couple 1"} & ${payers.p2 ? payers.p2.name : "Couple 2"}`
+      : (payers[it.assign] ? payers[it.assign].name : "Unassigned");
     const breakdown = (it.preTax != null)
       ? `${money(it.preTax)} + ${money(it.tax || 0)} tax`
       : "";
@@ -412,16 +411,8 @@ $("#cat-chips").addEventListener("click", e => {
 });
 assignChips.addEventListener("click", e => {
   const btn = e.target.closest(".chip"); if (!btn) return;
-  const val = btn.dataset.assign;
-  if (val === "all"){
-    selectedAssign = "all";
-  } else {
-    const current = Array.isArray(selectedAssign) ? selectedAssign.slice() : [];
-    const idx = current.indexOf(val);
-    if (idx === -1) current.push(val); else current.splice(idx, 1);
-    selectedAssign = current.length ? current : "all";
-  }
-  renderAssignChips();
+  selectedAssign = btn.dataset.assign;
+  assignChips.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", c === btn ? "true" : "false"));
 });
 $("#add-form").addEventListener("submit", e => {
   e.preventDefault();
@@ -453,7 +444,9 @@ function exportCsv(){
   const rows = [];
   rows.push(["Category", "Description", "Pre-tax", "Tax", "Total", "Assigned to"]);
   items.slice().sort((a, b) => a.seq - b.seq).forEach(it => {
-    const who = whoLabel(it.assign);
+    const who = it.assign === "all" ? "Split by seat"
+      : it.assign === "wife" ? `Wife's (split ${payers.p1 ? payers.p1.name : "Couple 1"} & ${payers.p2 ? payers.p2.name : "Couple 2"})`
+      : (payers[it.assign] ? payers[it.assign].name : it.assign);
     rows.push([
       catLabel[it.category] || it.category,
       it.description,
