@@ -269,7 +269,7 @@ function renderAssignChips(){
   wife.setAttribute("aria-pressed", selectedAssign === "wife" ? "true" : "false");
   const c1 = payers.p1 ? payers.p1.name : "Couple 1";
   const c2 = payers.p2 ? payers.p2.name : "Couple 2";
-  wife.textContent = `Wife's (split ${c1} & ${c2})`;
+  wife.textContent = `Mary (split ${c1} & ${c2})`;
   assignChips.appendChild(wife);
 }
 
@@ -297,7 +297,7 @@ function renderAdded(){
     const row = document.createElement("div");
     row.className = "added";
     const who = it.assign === "all" ? "Split by seat (all 3)"
-      : it.assign === "wife" ? `Wife's — split ${payers.p1 ? payers.p1.name : "Couple 1"} & ${payers.p2 ? payers.p2.name : "Couple 2"}`
+      : it.assign === "wife" ? `Mary — split ${payers.p1 ? payers.p1.name : "Couple 1"} & ${payers.p2 ? payers.p2.name : "Couple 2"}`
       : (payers[it.assign] ? payers[it.assign].name : "Unassigned");
     const breakdown = (it.preTax != null)
       ? `${money(it.preTax)} + ${money(it.tax || 0)} tax`
