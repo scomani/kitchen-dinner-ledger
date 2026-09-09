@@ -70,6 +70,7 @@
   .line-row .amt{ font-weight: 600; }
   form.add{ display: grid; gap: 14px; }
   .field label{ display:block; font-size: 12.5px; font-weight: 600; color: var(--text-soft); margin-bottom: 6px; }
+  .field .hint{ font-size: 12px; color: var(--text-faint); margin-top: 5px; }
   .field input[type="text"], .field input[type="number"]{
     width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
     padding: 9px 12px; font: inherit; color: var(--text);
@@ -82,7 +83,7 @@
   .chip{ font: inherit; font-size: 13px; font-weight: 500; padding: 7px 13px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text-soft); cursor: pointer; }
   .chip[aria-pressed="true"]{ background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
   .row2{ display: grid; grid-template-columns: 1fr; gap: 12px; }
-  @media (min-width: 480px){ .row2{ grid-template-columns: 1fr 140px; } }
+  @media (min-width: 480px){ .row2{ grid-template-columns: 1fr 160px; } }
   .btn{ font: inherit; font-weight: 600; font-size: 14px; background: var(--accent); color: var(--accent-text); border: none; border-radius: 8px; padding: 10px 16px; cursor: pointer; justify-self: start; }
   .btn:hover{ opacity: .9; }
   .btn:disabled{ opacity: .5; cursor: not-allowed; }
@@ -90,6 +91,7 @@
   .added{ display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 10px 14px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-2); }
   .added .desc{ font-weight: 500; font-size: 14px; }
   .added .who{ font-size: 12px; color: var(--text-soft); }
+  .added .breakdown{ font-size: 11.5px; color: var(--text-faint); margin-top: 2px; }
   .cat-pill{ font-size: 10.5px; text-transform: uppercase; letter-spacing: .04em; font-weight: 700; padding: 2px 7px; border-radius: 6px; margin-right: 6px; }
   .cat-pill.supplemental{ background: var(--tag-supplemental-bg); color: var(--tag-supplemental-text); }
   .cat-pill.beverage{ background: var(--tag-beverage-bg); color: var(--tag-beverage-text); }
@@ -98,11 +100,11 @@
   .del{ background: none; border: none; color: var(--text-faint); font-size: 17px; cursor: pointer; line-height: 1; padding: 4px 6px; border-radius: 6px; }
   .del:hover{ color: var(--danger); background: var(--surface); }
   .empty{ font-size: 13.5px; color: var(--text-faint); padding: 6px 2px; }
-  .couples{ display: grid; grid-template-columns: repeat(auto-fit, minmax(170px,1fr)); gap: 12px; }
-  .couple-card{ border: 1px solid var(--border); border-radius: 10px; padding: 14px; background: var(--surface-2); display: flex; flex-direction: column; gap: 10px; }
-  .couple-card input[type="text"]{ font-weight: 600; font-size: 14px; background: transparent; border: none; border-bottom: 1px solid transparent; padding: 2px 0; color: var(--text); width: 100%; font-family: inherit; }
-  .couple-card input[type="text"]:hover, .couple-card input[type="text"]:focus{ border-bottom-color: var(--border); outline: none; }
-  .couple-total{ font-size: 22px; font-weight: 700; }
+  .payers{ display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 12px; }
+  .payer-card{ border: 1px solid var(--border); border-radius: 10px; padding: 14px; background: var(--surface-2); display: flex; flex-direction: column; gap: 10px; }
+  .payer-card input[type="text"]{ font-weight: 600; font-size: 14px; background: transparent; border: none; border-bottom: 1px solid transparent; padding: 2px 0; color: var(--text); width: 100%; font-family: inherit; }
+  .payer-card input[type="text"]:hover, .payer-card input[type="text"]:focus{ border-bottom-color: var(--border); outline: none; }
+  .payer-total{ font-size: 20px; font-weight: 700; }
   .paid-toggle{ display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--text-soft); cursor: pointer; user-select: none; }
   .paid-toggle input{ accent-color: var(--good); width: 15px; height: 15px; }
   .total-bar{ display: flex; justify-content: space-between; align-items: center; gap: 12px; background: var(--accent-soft); border: 1px solid var(--border); }
@@ -119,20 +121,20 @@
     <h1>Kitchen Dinner Ledger</h1>
     <div class="meta">
       <span><b>Thu, Sept 10, 2026</b> &middot; 6:30 PM</span>
-      <span>Party of 6 &middot; 3 couples</span>
+      <span>Party of 6 &middot; Couples 1 &amp; 2 split the wife's seat, Husband covers his own</span>
       <span>Confirmation TOCK-R-KRQ0DWLM</span>
     </div>
   </header>
 
   <div class="card">
     <h2>Paid on the reservation</h2>
-    <p class="sub">Charged already to the Amex ending 3870 &mdash; split evenly, no action needed.</p>
+    <p class="sub">Charged already to the Amex ending 3870 &mdash; split by seat: Couple 1 and Couple 2 each cover their own 2 seats plus half of the wife's seat; the Husband covers just his own seat.</p>
     <div id="locked-list"></div>
   </div>
 
   <div class="card">
     <h2>Add to the tab</h2>
-    <p class="sub">Supplemental items, beverages, or the wine pairing &mdash; add each as you get the numbers.</p>
+    <p class="sub">Supplemental items, beverages, or the wine pairing &mdash; add each as you get the numbers. Sales tax is added automatically; no service charge is applied to these.</p>
     <form class="add" id="add-form">
       <div class="field">
         <label for="f-desc">What was it</label>
@@ -148,14 +150,16 @@
           </div>
         </div>
         <div class="field amt-field">
-          <label for="f-amt">Amount</label>
+          <label for="f-amt">Pre-tax amount</label>
           <span class="cur">$</span>
           <input type="number" id="f-amt" min="0" step="0.01" placeholder="0.00" required>
+          <div class="hint">+8.75% tax added automatically</div>
         </div>
       </div>
       <div class="field">
         <label>Who's this for</label>
         <div class="chips" id="assign-chips" role="group" aria-label="Assign to"></div>
+        <div class="hint">Pick "Everyone" for a shared cost, or select one or more people to split just between them (e.g. Couple 1 + Couple 2 splits it 50/50 between those two).</div>
       </div>
       <button type="submit" class="btn" id="add-btn">Add to ledger</button>
     </form>
@@ -164,9 +168,9 @@
   </div>
 
   <div class="card">
-    <h2>Per-couple total</h2>
-    <p class="sub">Updates automatically as items are added above.</p>
-    <div class="couples" id="couples"></div>
+    <h2>Per-payer total</h2>
+    <p class="sub">Couple 1 &amp; Couple 2 split the wife's share between them; the Husband pays his own. Updates automatically as items are added above.</p>
+    <div class="payers" id="payers"></div>
   </div>
 
   <div class="card total-bar">
@@ -196,6 +200,8 @@ const firebaseConfig = {
   appId: "1:146970001310:web:92009d88a483aca27a208f"
 };
 
+const TAX_RATE = 0.0875;
+
 const money = n => "$" + (Math.round((n + Number.EPSILON) * 100) / 100).toLocaleString("en-US", {minimumFractionDigits:2, maximumFractionDigits:2});
 const catLabel = { dinner:"Dinner", service:"Service charge", tax:"Sales tax", supplemental:"Supplemental item", beverage:"Beverage", wine:"Wine pairing" };
 
@@ -204,48 +210,57 @@ const FIXED_ITEMS = [
   { id:"fixed-service", description:"Service charge (22%)",                   category:"service", amount:297.00,  assign:"all", locked:true, seq:1 },
   { id:"fixed-tax",     description:"Sales tax (8.75%)",                      category:"tax",      amount:144.11,  assign:"all", locked:true, seq:2 },
 ];
-const DEFAULT_COUPLES = { c1:{ name:"Couple 1" }, c2:{ name:"Couple 2" }, c3:{ name:"Couple 3" } };
-const DEFAULT_PAID = { c1:false, c2:false, c3:false };
+const DEFAULT_PAYERS = { p1:{ name:"Couple 1" }, p2:{ name:"Couple 2" }, p3:{ name:"Husband" } };
+const DEFAULT_PAID = { p1:false, p2:false, p3:false };
+// Seats covered by each payer: Couple 1 and Couple 2 each cover their own 2 seats
+// plus half of the wife's seat (2.5 total); the Husband covers only his own seat (1).
+const WEIGHTS = { p1: 2.5, p2: 2.5, p3: 1 };
 
-let couples = JSON.parse(JSON.stringify(DEFAULT_COUPLES));
+let payers = JSON.parse(JSON.stringify(DEFAULT_PAYERS));
 let paid = JSON.parse(JSON.stringify(DEFAULT_PAID));
 let items = FIXED_ITEMS.slice();
 
 let selectedCat = "supplemental";
-let selectedAssign = "all";
+let selectedAssign = "all"; // "all", or an array of payer ids like ["p1","p2"]
 
 const $ = sel => document.querySelector(sel);
 const lockedList = $("#locked-list");
 const addedList = $("#added-list");
-const couplesEl = $("#couples");
+const payersEl = $("#payers");
 const grandTotalEl = $("#grand-total");
 const assignChips = $("#assign-chips");
 const syncNote = $("#sync-note");
 const addBtn = $("#add-btn");
 
-function couplesTotals(){
-  const ids = Object.keys(couples);
+function payerTotals(){
+  const ids = Object.keys(payers);
   const totals = {}; ids.forEach(id => totals[id] = 0);
+  const totalWeight = ids.reduce((s, id) => s + (WEIGHTS[id] || 1), 0);
   items.forEach(it => {
-    if (it.assign === "all") ids.forEach(id => totals[id] += it.amount / ids.length);
-    else if (totals.hasOwnProperty(it.assign)) totals[it.assign] += it.amount;
+    if (it.assign === "all") {
+      ids.forEach(id => totals[id] += it.amount * ((WEIGHTS[id] || 1) / totalWeight));
+    } else if (Array.isArray(it.assign) && it.assign.length) {
+      const chosen = it.assign.filter(id => totals.hasOwnProperty(id));
+      if (chosen.length) chosen.forEach(id => totals[id] += it.amount / chosen.length);
+    }
   });
   return totals;
 }
 
 function renderAssignChips(){
-  const ids = Object.keys(couples);
+  const ids = Object.keys(payers);
   assignChips.innerHTML = "";
   const everyone = document.createElement("button");
   everyone.type = "button"; everyone.className = "chip"; everyone.dataset.assign = "all";
   everyone.setAttribute("aria-pressed", selectedAssign === "all" ? "true" : "false");
-  everyone.textContent = "Everyone";
+  everyone.textContent = "Everyone (by seat)";
   assignChips.appendChild(everyone);
   ids.forEach(id => {
     const b = document.createElement("button");
     b.type = "button"; b.className = "chip"; b.dataset.assign = id;
-    b.setAttribute("aria-pressed", selectedAssign === id ? "true" : "false");
-    b.textContent = couples[id].name || id;
+    const isPicked = Array.isArray(selectedAssign) && selectedAssign.includes(id);
+    b.setAttribute("aria-pressed", isPicked ? "true" : "false");
+    b.textContent = payers[id].name || id;
     assignChips.appendChild(b);
   });
 }
@@ -258,6 +273,17 @@ function renderLocked(){
     row.innerHTML = `<span class="desc">${catLabel[it.category] || it.description}</span><span class="amt num">${money(it.amount)}</span>`;
     lockedList.appendChild(row);
   });
+}
+
+function whoLabel(assign){
+  if (assign === "all") return "Split by seat (all 3)";
+  if (Array.isArray(assign)){
+    const names = assign.map(id => payers[id] ? payers[id].name : id);
+    if (names.length === 1) return names[0];
+    return names.join(" & ") + " (split evenly)";
+  }
+  // Backward compatibility with items saved before multi-select existed.
+  return payers[assign] ? payers[assign].name : "Unassigned";
 }
 
 function renderAdded(){
@@ -273,12 +299,16 @@ function renderAdded(){
   added.forEach(it => {
     const row = document.createElement("div");
     row.className = "added";
-    const who = it.assign === "all" ? "Split evenly" : (couples[it.assign] ? couples[it.assign].name : "Unassigned");
+    const who = whoLabel(it.assign);
+    const breakdown = (it.preTax != null)
+      ? `${money(it.preTax)} + ${money(it.tax || 0)} tax`
+      : "";
     row.innerHTML = `
       <div>
         <span class="cat-pill ${it.category}">${catLabel[it.category]}</span>
         <span class="desc">${escapeHtml(it.description)}</span><br>
         <span class="who">${who}</span>
+        ${breakdown ? `<div class="breakdown">${breakdown}</div>` : ""}
       </div>
       <div class="amt num">${money(it.amount)}</div>
       <button class="del" title="Remove" aria-label="Remove item">&times;</button>`;
@@ -287,19 +317,19 @@ function renderAdded(){
   });
 }
 
-function renderCouples(){
-  const totals = couplesTotals();
-  couplesEl.innerHTML = "";
-  Object.keys(couples).forEach(id => {
+function renderPayers(){
+  const totals = payerTotals();
+  payersEl.innerHTML = "";
+  Object.keys(payers).forEach(id => {
     const card = document.createElement("div");
-    card.className = "couple-card";
+    card.className = "payer-card";
     card.innerHTML = `
-      <input type="text" value="${escapeAttr(couples[id].name)}" maxlength="30" aria-label="Couple name">
-      <div class="couple-total num">${money(totals[id] || 0)}</div>
+      <input type="text" value="${escapeAttr(payers[id].name)}" maxlength="30" aria-label="Payer name">
+      <div class="payer-total num">${money(totals[id] || 0)}</div>
       <label class="paid-toggle"><input type="checkbox" ${paid[id] ? "checked" : ""}> ${paid[id] ? "Paid" : "Mark as paid"}</label>`;
-    card.querySelector('input[type="text"]').addEventListener("change", e => renameCouple(id, e.target.value));
+    card.querySelector('input[type="text"]').addEventListener("change", e => renamePayer(id, e.target.value));
     card.querySelector('input[type="checkbox"]').addEventListener("change", e => setPaid(id, e.target.checked));
-    couplesEl.appendChild(card);
+    payersEl.appendChild(card);
   });
 }
 
@@ -308,7 +338,7 @@ function renderGrand(){
   grandTotalEl.textContent = money(grand);
 }
 
-function renderAll(){ renderLocked(); renderAdded(); renderCouples(); renderGrand(); renderAssignChips(); }
+function renderAll(){ renderLocked(); renderAdded(); renderPayers(); renderGrand(); renderAssignChips(); }
 
 function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
 function escapeAttr(s){ return escapeHtml(s); }
@@ -337,7 +367,7 @@ try{
 
   onSnapshot(stateRef, snap => {
     const data = snap.data();
-    couples = (data && data.couples) ? Object.assign({}, DEFAULT_COUPLES, data.couples) : JSON.parse(JSON.stringify(DEFAULT_COUPLES));
+    payers = (data && data.payers) ? Object.assign({}, DEFAULT_PAYERS, data.payers) : JSON.parse(JSON.stringify(DEFAULT_PAYERS));
     paid = (data && data.paid) ? Object.assign({}, DEFAULT_PAID, data.paid) : JSON.parse(JSON.stringify(DEFAULT_PAID));
     renderAll();
   }, err => { console.error(err); markLocalOnly(); });
@@ -350,7 +380,7 @@ try{
 
   window.__addItem = item => addDoc(itemsRef, item).catch(err => console.error(err));
   window.__removeItem = id => deleteDoc(doc(db, "kitchenLedger/main/items/" + id)).catch(err => console.error(err));
-  window.__renameCouple = (id, name) => setDoc(stateRef, { couples: { [id]: { name } } }, { merge: true }).catch(err => console.error(err));
+  window.__renamePayer = (id, name) => setDoc(stateRef, { payers: { [id]: { name } } }, { merge: true }).catch(err => console.error(err));
   window.__setPaid = (id, val) => setDoc(stateRef, { paid: { [id]: val } }, { merge: true }).catch(err => console.error(err));
 } catch(err){
   console.error(err);
@@ -365,10 +395,10 @@ function removeItem(id){
   if (liveMode){ window.__removeItem(id); }
   else { items = items.filter(i => i.id !== id); renderAll(); }
 }
-function renameCouple(id, name){
-  name = (name || "").trim() || couples[id].name;
-  if (liveMode){ window.__renameCouple(id, name); }
-  else { couples[id].name = name; renderAll(); }
+function renamePayer(id, name){
+  name = (name || "").trim() || payers[id].name;
+  if (liveMode){ window.__renamePayer(id, name); }
+  else { payers[id].name = name; renderAll(); }
 }
 function setPaid(id, val){
   if (liveMode){ window.__setPaid(id, val); }
@@ -382,15 +412,35 @@ $("#cat-chips").addEventListener("click", e => {
 });
 assignChips.addEventListener("click", e => {
   const btn = e.target.closest(".chip"); if (!btn) return;
-  selectedAssign = btn.dataset.assign;
-  assignChips.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", c === btn ? "true" : "false"));
+  const val = btn.dataset.assign;
+  if (val === "all"){
+    selectedAssign = "all";
+  } else {
+    const current = Array.isArray(selectedAssign) ? selectedAssign.slice() : [];
+    const idx = current.indexOf(val);
+    if (idx === -1) current.push(val); else current.splice(idx, 1);
+    selectedAssign = current.length ? current : "all";
+  }
+  renderAssignChips();
 });
 $("#add-form").addEventListener("submit", e => {
   e.preventDefault();
   const desc = $("#f-desc").value.trim();
-  const amt = parseFloat($("#f-amt").value);
-  if (!desc || !isFinite(amt) || amt <= 0) return;
-  addItem({ description: desc, category: selectedCat, amount: Math.round(amt * 100) / 100, assign: selectedAssign, locked: false, seq: Date.now() });
+  const preTax = parseFloat($("#f-amt").value);
+  if (!desc || !isFinite(preTax) || preTax <= 0) return;
+  const preTaxRounded = Math.round(preTax * 100) / 100;
+  const tax = Math.round(preTaxRounded * TAX_RATE * 100) / 100;
+  const total = Math.round((preTaxRounded + tax) * 100) / 100;
+  addItem({
+    description: desc,
+    category: selectedCat,
+    preTax: preTaxRounded,
+    tax,
+    amount: total,
+    assign: selectedAssign,
+    locked: false,
+    seq: Date.now()
+  });
   $("#f-desc").value = ""; $("#f-amt").value = "";
 });
 
@@ -401,20 +451,27 @@ function csvField(v){
 
 function exportCsv(){
   const rows = [];
-  rows.push(["Category", "Description", "Amount", "Assigned to"]);
+  rows.push(["Category", "Description", "Pre-tax", "Tax", "Total", "Assigned to"]);
   items.slice().sort((a, b) => a.seq - b.seq).forEach(it => {
-    const who = it.assign === "all" ? "Split evenly" : (couples[it.assign] ? couples[it.assign].name : it.assign);
-    rows.push([catLabel[it.category] || it.category, it.description, it.amount.toFixed(2), who]);
+    const who = whoLabel(it.assign);
+    rows.push([
+      catLabel[it.category] || it.category,
+      it.description,
+      it.preTax != null ? it.preTax.toFixed(2) : "",
+      it.tax != null ? it.tax.toFixed(2) : "",
+      it.amount.toFixed(2),
+      who
+    ]);
   });
   rows.push([]);
-  rows.push(["Couple", "Total owed", "Paid?"]);
-  const totals = couplesTotals();
-  Object.keys(couples).forEach(id => {
-    rows.push([couples[id].name, (totals[id] || 0).toFixed(2), paid[id] ? "Yes" : "No"]);
+  rows.push(["Payer", "Total owed", "Paid?"]);
+  const totals = payerTotals();
+  Object.keys(payers).forEach(id => {
+    rows.push([payers[id].name, (totals[id] || 0).toFixed(2), paid[id] ? "Yes" : "No"]);
   });
   rows.push([]);
   const grand = items.reduce((s, i) => s + i.amount, 0);
-  rows.push(["Grand total", "", grand.toFixed(2)]);
+  rows.push(["Grand total", "", "", "", grand.toFixed(2)]);
 
   const csv = rows.map(r => r.map(csvField).join(",")).join("\r\n");
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
