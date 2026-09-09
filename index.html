@@ -445,7 +445,7 @@ function exportCsv(){
   rows.push(["Category", "Description", "Pre-tax", "Tax", "Total", "Assigned to"]);
   items.slice().sort((a, b) => a.seq - b.seq).forEach(it => {
     const who = it.assign === "all" ? "Split by seat"
-      : it.assign === "wife" ? `Wife's (split ${payers.p1 ? payers.p1.name : "Couple 1"} & ${payers.p2 ? payers.p2.name : "Couple 2"})`
+      : it.assign === "wife" ? `Mary (split ${payers.p1 ? payers.p1.name : "Couple 1"} & ${payers.p2 ? payers.p2.name : "Couple 2"})`
       : (payers[it.assign] ? payers[it.assign].name : it.assign);
     rows.push([
       catLabel[it.category] || it.category,
